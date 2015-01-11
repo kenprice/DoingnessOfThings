@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <title>Assign Task</title>
+    </head>
+
+    <body>
+        <h1>Assign Task</h1>
+        <hr>
+
+
+        {% for task in tasks %}
+            <div class="task">
+                <div class="task-description">{{task.description}}</div>
+
+                <div class="task-category">
+                {% for category in task.category %}
+                    {{category}} <br>
+                {% endfor %}
+                </div>
+
+                <a href="user/{{user.id}}/newtask?task={{task.id}}">Assign Task</a>
+            </div>
+            <hr>
+        {% endfor %}
+
+
+    </body>
+
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <title>Task Add</title>
+    </head>
+
+    <body>
+        <h1>Add Task</h1>
+
+        <form method="post">
+            <label>
+                <div>description</div>
+                <input type="text" name="description" value="{{description}}">
+            </label>
+
+            <label>
+                <div>categories</div>
+                <textarea name="category"></textarea>
+            </label>
+
+            <div class="error">{{error}}</div>
+
+            <input type="submit">
+        </form>
+
+
+    </body>
+
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <title>Task Console</title>
+    </head>
+
+    <body>
+        <h1>List of Tasks</h1>
+        <hr>
+
+
+        {% for task in tasks %}
+            <div class="task">
+                <div class="task-description">{{task.description}}</div>
+
+                <div class="task-category">
+                {% for category in task.category %}
+                    {{category}} <br>
+                {% endfor %}
+                </div>
+
+                <a href="{{ uri_for('admin-taskedit', urlString = task.id) }}">Edit </a> -
+                <a href="{{ uri_for('admin-taskdelete', urlString = task.id) }}">Delete</a>
+            </div>
+            <hr>
+        {% endfor %}
+
+
+    </body>
+
+</html>

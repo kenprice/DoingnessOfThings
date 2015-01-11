@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <title>Task Edit</title>
+    </head>
+
+    <body>
+        <h1>Task Edit</h1>
+
+        <form method="post">
+            <label>
+                <div>description</div>
+                <input type="text" name="description" value="{{description}}">
+            </label>
+
+            <label>
+                <div>categories</div>
+                <textarea name="category">
+{% if category -%}
+{% for c in category -%}
+{{c}}
+{% endfor -%}
+{% endif -%}</textarea>
+            </label>
+
+            <div class="error">{{error}}</div>
+
+            <input type="submit">
+        </form>
+
+
+    </body>
+
+</html>

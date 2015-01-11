@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <title>Sign Up</title>
+    </head>
+
+    <body>
+        <h1>Sign Up</h1>
+        <hr>
+
+    <form method="POST" action="/signup">
+        <div>{{ form.username.label }}: {{ form.username(class="css_class") }}</div>
+        <div>{{ form.password.label }}: {{ form.password() }}</div>
+        <div>{{ form.password_confirm.label }}: {{ form.password_confirm() }}</div>
+
+
+        <div class="error">{{error}}</div>
+
+        <input type="submit">
+    </form>
+
+</body>
+
+</html>
