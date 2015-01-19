@@ -30,10 +30,10 @@ class UserNewTaskHandler(Handler):
         logging.error("Number of tasks: " + str(number_of_tasks))
 
         while True:
-            task1 = randint(0, number_of_tasks)
-            task2 = randint(0, number_of_tasks)
-            task3 = randint(0, number_of_tasks)
-            if (task1 != task2 != task3):
+            task1 = randint(0, number_of_tasks - 1)
+            task2 = randint(0, number_of_tasks - 1)
+            task3 = randint(0, number_of_tasks - 1)
+            if ((task1 != task2) and (task1 != task3) and (task2 != task3)):
                 break
 
         task1 = tasks[task1]

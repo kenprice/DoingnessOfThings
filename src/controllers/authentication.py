@@ -32,6 +32,9 @@ class LoginForm(Form):
     username = TextField('username', [validators.Required()])
     password = PasswordField('Password', [validators.Required()])
 
+
+## HANDLERS
+## --------
 class SignupHandler(Handler):
     "Serves up a signup form, creates new users"
     def get(self):
@@ -50,7 +53,7 @@ class SignupHandler(Handler):
                 "auth:" + form.username.data
                 ,unique_properties=['username']
                 ,username = form.username.data
-                ,admin = False
+                ,admin = True
                 ,password_raw = form.password.data)
 
             if success:
