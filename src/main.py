@@ -9,6 +9,8 @@ from controllers.adminpages import *
 
 from random import randint
 
+import json
+
 '''
 REQUEST HANDLERS
 '''
@@ -84,6 +86,10 @@ class UserFrontHandler(Handler):
 
         #self.redirect("/user/" + userid + "/newtask")
 
+class RetrieveTasklistJSON(Handler):
+    def get(self):
+        self.response.headers['Content-Type'] = 'application/json'
+        self.write(Task.listJSON())
 
 '''
 CONFIG AND APP
@@ -101,7 +107,8 @@ SITE_ROUTES = [ webapp2.Route(r'/', handler=RootPage, name='home')
                 ,webapp2.Route(r'/admin/task/edit/<urlString>', handler=TaskEditHandler, name="admin-taskedit")
                 ,webapp2.Route(r'/admin/task', handler=TaskConsoleHandler, name="admin-tasklist")
                 ,webapp2.Route(r'/user', handler=UserFrontHandler, name="user-frontpage")
-                ,webapp2.Route(r'/user/newtask', handler=UserNewTaskHandler, name="user-newtask")]
+                ,webapp2.Route(r'/user/newtask', handler=UserNewTaskHandler, name="user-newtask")
+                ,webapp2.Route(r'/tasklist.json', handler=RetrieveTasklistJSON, name="retrieve-tasklist") ]
 
 app = webapp2.WSGIApplication(SITE_ROUTES, debug=True, config = config)
 
