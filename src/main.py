@@ -1,15 +1,14 @@
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 from datetime import *
+from random import randint
+import json
+import urllib2
 
 from models.models import *
-
 from controllers.authentication import *
 from controllers.adminpages import *
 
-from random import randint
-
-import json
 
 '''
 REQUEST HANDLERS
@@ -89,7 +88,9 @@ class UserFrontHandler(Handler):
 class RetrieveTasklistJSON(Handler):
     def get(self):
         self.response.headers['Content-Type'] = 'application/json'
-        self.write(Task.listJSON())
+        #self.write(Task.listJSON())
+
+        self.response.out.write("%s(%s);" % (urllib2.unquote(self.request.get('callback')), Task.listJSON()))
 
 '''
 CONFIG AND APP
@@ -108,7 +109,7 @@ SITE_ROUTES = [ webapp2.Route(r'/', handler=RootPage, name='home')
                 ,webapp2.Route(r'/admin/task', handler=TaskConsoleHandler, name="admin-tasklist")
                 ,webapp2.Route(r'/user', handler=UserFrontHandler, name="user-frontpage")
                 ,webapp2.Route(r'/user/newtask', handler=UserNewTaskHandler, name="user-newtask")
-                ,webapp2.Route(r'/tasklist.json', handler=RetrieveTasklistJSON, name="retrieve-tasklist") ]
+                ,webapp2.Route(r'/tasklist.js', handler=RetrieveTasklistJSON, name="retrieve-tasklist") ]
 
 app = webapp2.WSGIApplication(SITE_ROUTES, debug=True, config = config)
 
