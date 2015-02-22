@@ -67,18 +67,36 @@
 				<div id="results">
 				</div>
 				
-				<script>
-					console.log("From index.html: calling getTasklist. Result:");
-					console.log(getTasklist());
-				</script>
-
-					
+				
 				<ul data-role="listview" data-inset="true" data-filter="true">
-					<li><a href="#">Task</a></li>
-					<li><a href="#">Task</a></li>
-					<li><a href="#">Task</a></li>
-					<li><a href="#">Task</a></li>
+					<li><a href="#"><span id="mission1"></span></a></li>
+					<li><a href="#"><span id="mission2"></span></a></li>
+					<li><a href="#"><span id="mission3"></span></a></li>
 				</ul>		
+				
+<script>
+	
+	tasklist_len = Tasklist.length;
+	var amount = 3,
+		lower_bound = 0,
+		upper_bound = Tasklist.length - 1,
+		selections = [];
+
+	while (selections.length <= 3) {
+		var random_number = Math.round(Math.random()*(upper_bound - lower_bound) + lower_bound);
+		if (selections.indexOf(random_number) == -1) { 
+			// Yay! new random number
+			selections.push( random_number );
+		}
+	}
+	
+	$("#mission1").text(Tasklist[selections[0]].description);
+	$("#mission2").text(Tasklist[selections[1]].description);
+	$("#mission3").text(Tasklist[selections[2]].description);
+	console.log("!!!" + Tasklist[0].category);
+	
+	
+</script>
 				
 				<a href="http://localhost:8080/">Testing</a>
 			</div><!-- /content -->

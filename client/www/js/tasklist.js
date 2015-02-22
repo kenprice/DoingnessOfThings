@@ -1,6 +1,6 @@
 function loadTasklist() {
 	//Retrieves tasklist from remote server and saves to local storage.
-	$.getJSON('http://localhost:8080/tasklist.js?callback=?', 
+	$.getJSON('http://localhost:8080/tasklist.json?callback=?', 
 		function(data) {	
 			console.log(JSON.stringify(data));
 			localStorage["tasklist"] = JSON.stringify(data);
@@ -28,13 +28,15 @@ function getTasklist() {
 	if (tlist) {
 		console.log("getTasklist: List fetched from localStorage['tasklist']");
 		console.log("getTasklist: Content of localStorage['tasklist']:\n" + tlist);
-		return tlist;
+		return JSON.parse(tlist);
 	} else {
 		tlist = loadTasklist();
 		if (tlist) 
-			return tlist; 
+			return JSON.parse(tlist); 
 		else 
 			return false;
 	}
 
 }
+
+Tasklist = getTasklist();

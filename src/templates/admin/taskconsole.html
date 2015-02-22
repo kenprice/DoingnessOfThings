@@ -20,9 +20,6 @@
                     {{category}} <br>
                 {% endfor %}
                 </div>
-
-                <a href="{{ uri_for('admin-taskedit', urlString = task.id) }}">Edit </a> -
-                <a href="{{ uri_for('admin-taskdelete', urlString = task.id) }}">Delete</a>
             </div>
             <hr>
         {% endfor %}
