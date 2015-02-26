@@ -35,10 +35,11 @@
 	<body> 
 	
 	<!-- App-specific JS -->
-	<script type="text/javascript" src="js/tasklist.js"></script>
-	<script type="text/javascript" src="js/userdata.js"></script>
 	<script type="text/javascript" src="js/app.js"></script>
+	<script type="text/javascript" src="js/appconfig.js"></script>
+	<script type="text/javascript" src="js/userdata.js"></script>
 	<script type="text/javascript" src="js/utils.js"></script>
+	<script type="text/javascript" src="js/tasklist.js"></script>
 	<!-- /App-specific JS -->
 
      <div class="app">
@@ -48,8 +49,9 @@
 				<h1>Doingness Of Things</h1>
 				<div data-role="navbar">
 					<ul>
-						<li><a href="#selectmission" class="ui-btn-active ui-state-persist">One</a></li>
-						<li><a href="b.html">Two</a></li>
+						<li><a href="#" id="menu-front" class="ui-btn-active ui-state-persist">Front</a></li>
+						<li><a href="#" id="menu-newmission" class="ui-state-persist">New Mission</a></li>
+						<li><a href="#" id="menu-log" class="ui-state-persist">Log</a></li>
 					</ul>
 				</div><!-- /navbar -->
 			</div><!-- /header -->
@@ -70,13 +72,20 @@
 
 			<div data-role="header" data-id="mainnav" data-position="fixed">
 				<h1>Doingness Of Things</h1>
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#" id="menu-front" class="ui-btn-active ui-state-persist">Front</a></li>
+						<li><a href="#" id="menu-newmission" class="ui-state-persist">New Mission</a></li>
+						<li><a href="#" id="menu-log" class="ui-state-persist">Log</a></li>
+					</ul>
+				</div><!-- /navbar -->
 			</div><!-- /header -->
 
 			<div data-role="content">
 				<p>You currently have no mission assigned. When you're ready for another mission, click the button below.</p>
 				
 				<ul data-role="listview" data-inset="true">
-					<li><a href="#selectmission">Give me a mission</a></li>
+					<li><a href="#" id="front-newmission">Give me a mission</a></li>
 				</ul>						
 			</div><!-- /content -->
 
@@ -133,6 +142,13 @@
 		<div data-role="page" id="selectmission">
 			<div data-role="header">
 				<h1>Tasklist</h1>
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#" id="menu-front" class="ui-btn-active ui-state-persist">Front</a></li>
+						<li><a href="#" id="menu-newmission" class="ui-state-persist">New Mission</a></li>
+						<li><a href="#" id="menu-log" class="ui-state-persist">Log</a></li>
+					</ul>
+				</div><!-- /navbar -->
 			</div><!-- /header -->
 
 			<div data-role="content">	
@@ -156,7 +172,25 @@
 			
 
 		</div><!-- /page -->  
-	
+
+		<div data-role="page" id="selectmission-disabled">
+			<div data-role="header">
+				<h1>Tasklist</h1>
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#" id="menu-front" class="ui-btn-active ui-state-persist">Front</a></li>
+						<li><a href="#" id="menu-newmission" class="ui-state-persist">New Mission</a></li>
+						<li><a href="#" id="menu-log" class="ui-state-persist">Log</a></li>
+					</ul>
+				</div><!-- /navbar -->
+			</div><!-- /header -->
+
+			<div data-role="content">	
+			<p>You already have a mission assigned!</p>
+			</div><!-- /content -->
+ 		</div><!-- /page -->  
+
+		
 		<div data-role="page" id="mission-failed">
 
 			<div data-role="header" data-id="mainnav" data-position="fixed">
@@ -178,6 +212,13 @@
 
 			<div data-role="header" data-id="mainnav" data-position="fixed">
 				<h1>Doingness Of Things</h1>
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#" id="menu-front" class="ui-btn-active ui-state-persist">Front</a></li>
+						<li><a href="#" id="menu-newmission" class="ui-state-persist">New Mission</a></li>
+						<li><a href="#" id="menu-log" class="ui-state-persist">Log</a></li>
+					</ul>
+				</div><!-- /navbar -->
 			</div><!-- /header -->
 
 			<div data-role="content">
@@ -193,116 +234,252 @@
 			</div><!-- /content -->
 
 		</div><!-- /page -->
+	
+
+	
+		<div data-role="page" id="user-log">
+			<div data-role="header">
+				<h1>User Log</h1>
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#" id="menu-front">Front</a></li>
+						<li><a href="#" id="menu-newmission">New Mission</a></li>
+						<li><a href="#" id="menu-log">Log</a></li>
+					</ul>
+				</div><!-- /navbar -->
+			</div><!-- /header -->
+
+			<div data-role="content">
+				
+				<ul data-role="listview" id="user-log-list">
+				
+				</ul>						
+			</div><!-- /content -->
+        	
+
+		</div><!-- /page -->  
 		
 	</div> <!-- /app-->
  
  
  
  <script>
- 
- 
-//===============================
-// FRONT-PAGE
-//===============================
 
-	if (UserInfo)
-	if (UserInfo.curTask && UserInfo.deadline){
-		task = getTaskFromKey(UserInfo.curTask);
-		$("#front-mission").text(task.description);
-		
-		if (UserInfo.deadline < Date.now())	{
-			//Task was assigned but deadline passed.
-			window.location = "#mission-failed";
-			clearTask();
-		} else {
-			//Task was assigned and still ongoing
-			d = new Date(UserInfo.deadline);
-			d_ms = UserInfo.deadline - Date.now();
-			d_hrs = parseInt(d_ms/(1000*60*60));
-			d_mins = parseInt((d_ms - d_hrs*1000*60*60)/(1000*60));
+/*
+====================================
+INITIALIZE APP DATA
+====================================
+*/
+
+$(document).ready(function () {
+
+	setInterval ( "updateFrontPage()", 60000 );
+	//===============================
+	// START UP
+	//===============================
+	var appconfig = new AppConfig();
+	var userdata = new UserData();
+	var currentuser = {};
+	var tasklist = new Tasklist();
+
+	userdata.getFromLocal();
+	appconfig.getFromLocal();
+	tasklist.getFromLocal();
+	if (!tasklist)
+		tasklist.getFromServer();
+
+	if (!config.firstTime)
+		lastuser = appconfig.lastUser;
+
+	u = -1;
+	for (i = 0; i < userdata.userInfo.length; i++){
+		if (userdata.userInfo[i].username == lastuser){
+			deadline = userdata.userInfo[i].deadline;
+			curTask = userdata.userInfo[i].curTask;
+			completedTasks = userdata.userInfo[i].completedTasks;
+			currentuser = new User(lastuser, curTask, deadline, completedTasks);
+		}
+	}
+	 
+	//pages can be aware of objects defined above.
+	 
+	//===============================
+	// FRONT-PAGE
+	//===============================
+
+	function updateFrontPage(){
+		//If Front page was updated, return true.
+		//Used to refresh front page. some cases redirects.
+		if (!currentuser) return false;
 			
-			$("#front-deadline").html("<h3>Deadline</h3><p>" + d.toLocaleString()
-				+ "</p><p><b>Time left:</b> " + d_hrs + " hours and " + d_mins + " minutes left!</p>");	
+		if (currentuser.curTask && currentuser.deadline){
+			console.log(currentuser.curTask);
+			var task = tasklist.getTaskFromKey(currentuser.curTask);
+			$("#front-mission").text(task.description);
+					
+			if (currentuser.deadline < Date.now())	{
+				//Task was assigned but deadline passed.
+				window.location = "#mission-failed";
+				clearTask();
+				userdata.updateUserEntry(currentuser, true);
+			} else {
+				//Task was assigned and still ongoing
+				d = new Date(currentuser.deadline);
+				d_ms = currentuser.deadline - Date.now();
+				d_hrs = parseInt(d_ms/(1000*60*60));
+				d_mins = parseInt((d_ms - d_hrs*1000*60*60)/(1000*60));
+						
+				$("#front-deadline").html("<h3>Deadline</h3><p>" + d.toLocaleString()
+					+ "</p><p><b>Time left:</b> " + d_hrs + " hours and " + d_mins + " minutes left!</p>");	
+						
+				return true;
+			}
+		} else {
+			//Task not assigned
+			window.location = "#front-nomission";
 		}
-		console.log("Front page");
-	} else {
-		//Task not assigned
-		window.location = "#front-nomission";
+		return false;
 	}
 
-//===============================
-// FIRSTTIME-OFFLINE
-//===============================
-	$( "#firsttime-username-button" ).bind( "click", function() {
-		str = $("#firsttime-username").val();
-		if (validateAlphaNumeric(str) && str.length >= 3){
-			//AppConfig set for first time.
-			initAppConfig(str, function(){
-				window.location = "#front-nomission";
-			});
-		} else
-			alert("Input should be alphanumeric and have at least 3 characters.");
-	});
-
-//===============================
-// SELECTMISSION
-//===============================
-	//Retrieves task list, picks 3 random tasks and displays them.
-	
-	Tasklist = getTasklist();
-	
-	tasklist_len = Tasklist.length;
-	var amount = 3,
-		lower_bound = 0,
-		upper_bound = Tasklist.length - 1,
-		selections = [];
-
-	while (selections.length <= 3) {
-		var random_number = Math.round(Math.random()*(upper_bound - lower_bound) + lower_bound);
-		if (selections.indexOf(random_number) == -1) { 
-			selections.push( random_number );
+	function renderFront() {
+		if (config.firstTime){
+			window.location = "#firsttime";	
+			return;
 		}
+		updateFrontPage();
 	}
-	
-	$("#mission1").text(Tasklist[selections[0]].description);
-	$("#mission2").text(Tasklist[selections[1]].description);
-	$("#mission3").text(Tasklist[selections[2]].description);
-	
-	$("#mission1").bind( "click", function() {
-		console.log("mission1 click");
-		if (assignTask(0)){
-			$("#front-mission").text(Tasklist[selections[0]].description);
-			window.location = "#front";
-		} else	
-			alert("Error!"); //fail
-	});
-	
-	$("#mission2").bind( "click", function() {
-		console.log("mission2 click");
-		if (assignTask(1)){
-			$("#front-mission").text(Tasklist[selections[1]].description);
-			window.location = "#front";
-		} else	
-			alert("Error!"); //fail
-	});
-	
-	$("#mission3").bind( "click", function() {
-		console.log("mission3 click");
-		if (assignTask(2)){
-			$("#front-mission").text(Tasklist[selections[2]].description);
-			window.location = "#front";
-		} else	
-			alert("Error!"); //fail
-	});
-	
-//===============================
-// COMLETE MISSION
-//===============================
-	$("#front-mission-complete").bind( "click", function() {
-		//clicked when user completes mission
+
+	renderFront();	
+
+
 		
-	});
-	
+	//===============================
+	// SELECTMISSION
+	//===============================
+
+	function renderMissionPage(){
+		//Retrieves task list, picks 3 random tasks and displays them.
+		
+		if (currentuser.curTask){
+			window.location = "#selectmission-disabled";
+			return;
+		}
+		
+		var tasklist_len = tasklist.list.length;
+		var amount = 3,
+			lower_bound = 0,
+			upper_bound = tasklist.list.length - 1,
+			selections = [];
+
+		while (selections.length <= 3) {
+			var random_number = Math.round(Math.random()*(upper_bound - lower_bound) + lower_bound);
+			if (selections.indexOf(random_number) == -1) { 
+				selections.push( random_number );
+			}
+		}
+		
+		$("#mission1").text(tasklist.list[selections[0]].description);
+		$("#mission2").text(tasklist.list[selections[1]].description);
+		$("#mission3").text(tasklist.list[selections[2]].description);
+			
+		window.location = "#selectmission";
+			
+		$("#mission1").bind( "click", function() {
+			var task = tasklist.list[selections[0]].key;
+			if (currentuser.assignTask(task)){
+				$("#front-mission").text(tasklist.list[selections[0]].description);
+				userdata.updateUserEntry(currentuser, true);
+				updateFrontPage();
+				window.location = "#front";
+			} else	
+				alert("Error!"); //fail
+		});
+		
+		$("#mission2").bind( "click", function() {
+			var task = tasklist.list[selections[1]].key;
+			if (currentuser.assignTask(task)){
+				$("#front-mission").text(tasklist.list[selections[1]].description);
+				userdata.updateUserEntry(currentuser, true);
+				updateFrontPage();
+				window.location = "#front";
+			} else	
+				alert("Error!"); //fail
+		});
+		
+		$("#mission3").bind( "click", function() {
+			var task = tasklist.list[selections[2]];
+			if (currentuser.assignTask(task)){
+				$("#front-mission").text(tasklist.list[selections[2]].description);
+				userdata.updateUserEntry(currentuser, true);
+				updateFrontPage();
+				window.location = "#front";
+			} else	
+				alert("Error!"); //fail
+		});
+	}
+
+
+	//===============================
+	// USER LOG
+	//===============================
+		function renderUserLog(){
+			completedTasks = currentuser.completedTasks;
+			
+			$("#user-log-list").html('');
+			for (i = 0; i < completedTasks.length; i++){
+				$("#user-log-list").append("<li>" + completedTasks[i].description + "</li>");
+			}
+			
+			window.location = "#user-log";
+			
+			//BUG: multiple runs of this might break look of list
+		}
+		
+	//===============================
+	// COMLETE MISSION
+	//===============================
+		$("#mission-complete").bind( "click", function() {
+			//clicked when user completes mission
+			comment = $("#mission-complete-comment").val();
+						
+			currentuser.addCurTaskToHistory(comment);
+			userdata.updateUserEntry(currentuser, true);
+			renderUserLog();
+		});
+		
+
+
+	//===============================
+	// NAV BAR
+	//===============================
+		$("#menu-front").live( "click", function() {
+			console.log("menu-front: " + updateFrontPage());
+			if (updateFrontPage())
+				window.location = "#front";
+		});
+		$("#menu-log").live( "click", function() {
+			renderUserLog();
+		});
+		$("#menu-newmission").live( "click", function() {
+				renderMissionPage();
+		});
+	//===============================
+	// BINDINGS
+	//===============================
+		$( "#firsttime-username-button" ).bind( "click", function() {
+			str = $("#firsttime-username").val();
+			if (validateAlphaNumeric(str) && str.length >= 3){
+				//AppConfig set for first time.
+				initAppConfig(str, function(){
+					window.location = "#front-nomission";
+				});
+			} else
+				alert("Input should be alphanumeric and have at least 3 characters.");
+		});
+		$("#front-newmission").live( "click", function() {
+				renderMissionPage();
+		});		
+});	
 </script>
 
 
