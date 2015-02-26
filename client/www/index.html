@@ -35,7 +35,6 @@
 	<body> 
 	
 	<!-- App-specific JS -->
-	<script type="text/javascript" src="js/app.js"></script>
 	<script type="text/javascript" src="js/appconfig.js"></script>
 	<script type="text/javascript" src="js/userdata.js"></script>
 	<script type="text/javascript" src="js/utils.js"></script>
@@ -270,10 +269,13 @@
 INITIALIZE APP DATA
 ====================================
 */
+function initialize(){
+
+}
+
 
 $(document).ready(function () {
 
-	setInterval ( "updateFrontPage()", 60000 );
 	//===============================
 	// START UP
 	//===============================
@@ -282,13 +284,19 @@ $(document).ready(function () {
 	var currentuser = {};
 	var tasklist = new Tasklist();
 
+	
+	console.log("init: userdata after declaration = " + JSON.stringify(userdata));
 	userdata.getFromLocal();
+	
+	console.log("init: userdata after getFromLocal = " + JSON.stringify(userdata));
+	
 	appconfig.getFromLocal();
-	tasklist.getFromLocal();
-	if (!tasklist)
+	
+	tasklist_success = tasklist.getFromLocal();
+	if (!tasklist_success)
 		tasklist.getFromServer();
 
-	if (!config.firstTime)
+	if (!appconfig.firstTime)
 		lastuser = appconfig.lastUser;
 
 	u = -1;
@@ -300,6 +308,19 @@ $(document).ready(function () {
 			currentuser = new User(lastuser, curTask, deadline, completedTasks);
 		}
 	}
+	
+	console.log("init: currentuser = " + JSON.stringify(currentuser));
+	 
+	initFirstTime = function(username){
+		appconfig = new AppConfig(username, Date.now());
+		appconfig.saveToLocal();
+		
+		currentuser = new User(username, null, null, null);
+		console.log("init: currentuser fisr time = " + JSON.stringify(currentuser));
+	
+		userdata.updateUserEntry(currentuser, true);
+	}
+	 
 	 
 	//pages can be aware of objects defined above.
 	 
@@ -342,7 +363,7 @@ $(document).ready(function () {
 	}
 
 	function renderFront() {
-		if (config.firstTime){
+		if (appconfig.firstTime){
 			window.location = "#firsttime";	
 			return;
 		}
@@ -351,6 +372,7 @@ $(document).ready(function () {
 
 	renderFront();	
 
+	setInterval ( "updateFrontPage()", 60000 );
 
 		
 	//===============================
@@ -365,6 +387,7 @@ $(document).ready(function () {
 			return;
 		}
 		
+		console.log("tasklist length: " + tasklist.list.length);
 		var tasklist_len = tasklist.list.length;
 		var amount = 3,
 			lower_bound = 0,
@@ -466,13 +489,13 @@ $(document).ready(function () {
 	//===============================
 	// BINDINGS
 	//===============================
+	
 		$( "#firsttime-username-button" ).bind( "click", function() {
 			str = $("#firsttime-username").val();
 			if (validateAlphaNumeric(str) && str.length >= 3){
 				//AppConfig set for first time.
-				initAppConfig(str, function(){
-					window.location = "#front-nomission";
-				});
+				initFirstTime(str);
+				window.location = "#front-nomission";
 			} else
 				alert("Input should be alphanumeric and have at least 3 characters.");
 		});

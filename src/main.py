@@ -89,6 +89,7 @@ class RetrieveTasklistJSON(Handler):
     def get(self):
         self.response.headers['Content-Type'] = 'application/json'
         #self.write(Task.listJSON())
+        #$_GET['callback'] . '(' . json_encode($data) . ');'
 
         self.response.out.write("%s(%s);" % (urllib2.unquote(self.request.get('callback')), Task.listJSON()))
 

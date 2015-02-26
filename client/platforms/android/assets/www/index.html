@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html> 
+	<head> 	
+	<meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+	<!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+	<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        
+	<title>Doingness of Things Mobile</title>
+	
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.css" />
+	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.js"></script>
+
+	</head> 
+	<body> 
+	
+	<!-- App-specific JS -->
+	<script type="text/javascript" src="js/appconfig.js"></script>
+	<script type="text/javascript" src="js/userdata.js"></script>
+	<script type="text/javascript" src="js/utils.js"></script>
+	<script type="text/javascript" src="js/tasklist.js"></script>
+	<!-- /App-specific JS -->
+
+     <div class="app">
+		<div data-role="page" id="front">
+
+			<div data-role="header" data-id="mainnav" data-position="fixed">
+				<h1>Doingness Of Things</h1>
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#" id="menu-front" class="ui-btn-active ui-state-persist">Front</a></li>
+						<li><a href="#" id="menu-newmission" class="ui-state-persist">New Mission</a></li>
+						<li><a href="#" id="menu-log" class="ui-state-persist">Log</a></li>
+					</ul>
+				</div><!-- /navbar -->
+			</div><!-- /header -->
+
+			<div data-role="content">
+				<h2>Current Mission</h2>
+				<span id="front-mission"></span>
+				
+				<div id="front-deadline"></div>
+				
+				<a href="#front-mission-complete">Mission Complete</a>
+			</div><!-- /content -->
+
+		</div><!-- /page -->
+		
+		
+		<div data-role="page" id="front-nomission">
+
+			<div data-role="header" data-id="mainnav" data-position="fixed">
+				<h1>Doingness Of Things</h1>
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#" id="menu-front" class="ui-btn-active ui-state-persist">Front</a></li>
+						<li><a href="#" id="menu-newmission" class="ui-state-persist">New Mission</a></li>
+						<li><a href="#" id="menu-log" class="ui-state-persist">Log</a></li>
+					</ul>
+				</div><!-- /navbar -->
+			</div><!-- /header -->
+
+			<div data-role="content">
+				<p>You currently have no mission assigned. When you're ready for another mission, click the button below.</p>
+				
+				<ul data-role="listview" data-inset="true">
+					<li><a href="#" id="front-newmission">Give me a mission</a></li>
+				</ul>						
+			</div><!-- /content -->
+
+		</div><!-- /page -->
+		
+		<div data-role="page" id="firsttime">
+
+			<div data-role="header" data-id="mainnav" data-position="fixed">
+				<h1>Doingness Of Things</h1>
+				<div data-role="navbar">
+					<!-- NAVBAR STUFF -->
+				</div><!-- /navbar -->
+			</div><!-- /header -->
+
+			<div data-role="content">
+				<p>Welcome to Doingness of Things! I see that you are running this app for the first time. You do not have to register. You can always do that later.</p> 
+				
+				<label for="basic">Select one:</label>
+				
+				<ul data-role="listview" data-inset="true">
+					<li><a href="#firsttime-signup">Register an Account</a></li>
+					<li><a href="#firsttime-login">Login</a></li>
+					<li><a href="#firsttime-offline">Do not Register</a></li>
+				</ul>
+			</div><!-- /content -->
+
+		</div><!-- /page -->		
+		
+		
+		
+		<div data-role="page" id="firsttime-offline">
+
+			<div data-role="header" data-id="mainnav" data-position="fixed">
+				<h1>Doingness Of Things</h1>
+				<div data-role="navbar">
+					<!-- NAVBAR STUFF -->
+				</div><!-- /navbar -->
+			</div><!-- /header -->
+
+			<div data-role="content">
+				<p>Please choose a name.</p>
+				<label for="basic">Enter username:</label>
+				
+				<input type="text" name="name" id="firsttime-username" value="" data-mini="true">
+				<input type="button"  id="firsttime-username-button" value="Submit">
+
+			</div><!-- /content -->
+
+
+			
+
+		</div><!-- /page -->		
+		
+		<div data-role="page" id="selectmission">
+			<div data-role="header">
+				<h1>Tasklist</h1>
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#" id="menu-front" class="ui-btn-active ui-state-persist">Front</a></li>
+						<li><a href="#" id="menu-newmission" class="ui-state-persist">New Mission</a></li>
+						<li><a href="#" id="menu-log" class="ui-state-persist">Log</a></li>
+					</ul>
+				</div><!-- /navbar -->
+			</div><!-- /header -->
+
+			<div data-role="content">	
+				
+				<ul data-role="listview" data-inset="true">
+					<li><a href="#" id="mission1"></a></li>
+					<li><a href="#" id="mission2"></a></li>
+					<li><a href="#" id="mission3"></a></li>
+				</ul>						
+			</div><!-- /content -->
+        
+			
+			<!--
+			From HelloWorld App:
+			
+			<div id="deviceready" class="blink">
+                <p class="event listening">Connecting to Device</p>
+                <p class="event received">Device is Ready</p>
+            </div>
+			-->
+			
+
+		</div><!-- /page -->  
+
+		<div data-role="page" id="selectmission-disabled">
+			<div data-role="header">
+				<h1>Tasklist</h1>
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#" id="menu-front" class="ui-btn-active ui-state-persist">Front</a></li>
+						<li><a href="#" id="menu-newmission" class="ui-state-persist">New Mission</a></li>
+						<li><a href="#" id="menu-log" class="ui-state-persist">Log</a></li>
+					</ul>
+				</div><!-- /navbar -->
+			</div><!-- /header -->
+
+			<div data-role="content">	
+			<p>You already have a mission assigned!</p>
+			</div><!-- /content -->
+ 		</div><!-- /page -->  
+
+		
+		<div data-role="page" id="mission-failed">
+
+			<div data-role="header" data-id="mainnav" data-position="fixed">
+				<h1>Mission Failed</h1>
+			</div><!-- /header -->
+
+			<div data-role="content">
+				<p>Deadline has passed.</p>
+				
+				<ul data-role="listview" data-inset="true">
+					<li><a href="#selectmission">Another Mission</a></li>
+				</ul>						
+			</div><!-- /content -->
+
+		</div><!-- /page -->
+
+
+		<div data-role="page" id="front-mission-complete">
+
+			<div data-role="header" data-id="mainnav" data-position="fixed">
+				<h1>Doingness Of Things</h1>
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#" id="menu-front" class="ui-btn-active ui-state-persist">Front</a></li>
+						<li><a href="#" id="menu-newmission" class="ui-state-persist">New Mission</a></li>
+						<li><a href="#" id="menu-log" class="ui-state-persist">Log</a></li>
+					</ul>
+				</div><!-- /navbar -->
+			</div><!-- /header -->
+
+			<div data-role="content">
+				<h2>Current Mission</h2>
+				<p>Awesome! Write your thoughts about your experience. This will be saved in your log. Or just click "Complete".</p>
+				
+				<div data-role="fieldcontain">
+					<label for="mission-complete-comment">Comments</label>
+					<textarea cols="40" rows="8" name="textarea" id="mission-complete-comment"></textarea>
+				</div>
+
+				<input type="button"  id="mission-complete" value="Complete">
+			</div><!-- /content -->
+
+		</div><!-- /page -->
+	
+
+	
+		<div data-role="page" id="user-log">
+			<div data-role="header">
+				<h1>User Log</h1>
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#" id="menu-front">Front</a></li>
+						<li><a href="#" id="menu-newmission">New Mission</a></li>
+						<li><a href="#" id="menu-log">Log</a></li>
+					</ul>
+				</div><!-- /navbar -->
+			</div><!-- /header -->
+
+			<div data-role="content">
+				
+				<ul data-role="listview" id="user-log-list">
+				
+				</ul>						
+			</div><!-- /content -->
+        	
+
+		</div><!-- /page -->  
+		
+	</div> <!-- /app-->
+ 
+ 
+ 
+ <script>
+
+/*
+====================================
+INITIALIZE APP DATA
+====================================
+*/
+
+$(document).ready(function () {
+
+	//===============================
+	// START UP
+	//===============================
+	var appconfig = new AppConfig();
+	var userdata = new UserData();
+	var currentuser = {};
+	var tasklist = new Tasklist();
+
+	userdata.getFromLocal();
+	appconfig.getFromLocal();
+	
+	tasklist_success = tasklist.getFromLocal();
+	if (!tasklist_success)
+		tasklist.getFromServer();
+
+	if (!appconfig.firstTime)
+		lastuser = appconfig.lastUser;
+
+	u = -1;
+	for (i = 0; i < userdata.userInfo.length; i++){
+		if (userdata.userInfo[i].username == lastuser){
+			deadline = userdata.userInfo[i].deadline;
+			curTask = userdata.userInfo[i].curTask;
+			completedTasks = userdata.userInfo[i].completedTasks;
+			currentuser = new User(lastuser, curTask, deadline, completedTasks);
+		}
+	}
+	 
+	function initFirstTime(username){
+		appconfig = new AppConfig(username, Date.now());
+		appconfig.saveToLocal();
+		currentuser = new User(username, null, null, null);
+	}
+	 
+	 
+	//pages can be aware of objects defined above.
+	 
+	//===============================
+	// FRONT-PAGE
+	//===============================
+
+	function updateFrontPage(){
+		//If Front page was updated, return true.
+		//Used to refresh front page. some cases redirects.
+		if (!currentuser) return false;
+			
+		if (currentuser.curTask && currentuser.deadline){
+			console.log(currentuser.curTask);
+			var task = tasklist.getTaskFromKey(currentuser.curTask);
+			$("#front-mission").text(task.description);
+					
+			if (currentuser.deadline < Date.now())	{
+				//Task was assigned but deadline passed.
+				window.location = "#mission-failed";
+				clearTask();
+				userdata.updateUserEntry(currentuser, true);
+			} else {
+				//Task was assigned and still ongoing
+				d = new Date(currentuser.deadline);
+				d_ms = currentuser.deadline - Date.now();
+				d_hrs = parseInt(d_ms/(1000*60*60));
+				d_mins = parseInt((d_ms - d_hrs*1000*60*60)/(1000*60));
+						
+				$("#front-deadline").html("<h3>Deadline</h3><p>" + d.toLocaleString()
+					+ "</p><p><b>Time left:</b> " + d_hrs + " hours and " + d_mins + " minutes left!</p>");	
+						
+				return true;
+			}
+		} else {
+			//Task not assigned
+			window.location = "#front-nomission";
+		}
+		return false;
+	}
+
+	function renderFront() {
+		if (appconfig.firstTime){
+			window.location = "#firsttime";	
+			return;
+		}
+		updateFrontPage();
+	}
+
+	renderFront();	
+
+	setInterval ( "updateFrontPage()", 60000 );
+
+		
+	//===============================
+	// SELECTMISSION
+	//===============================
+
+	function renderMissionPage(){
+		//Retrieves task list, picks 3 random tasks and displays them.
+		
+		if (currentuser.curTask){
+			window.location = "#selectmission-disabled";
+			return;
+		}
+		
+		console.log("tasklist length: " + tasklist.list.length);
+		var tasklist_len = tasklist.list.length;
+		var amount = 3,
+			lower_bound = 0,
+			upper_bound = tasklist.list.length - 1,
+			selections = [];
+
+		while (selections.length <= 3) {
+			var random_number = Math.round(Math.random()*(upper_bound - lower_bound) + lower_bound);
+			if (selections.indexOf(random_number) == -1) { 
+				selections.push( random_number );
+			}
+		}
+		
+		$("#mission1").text(tasklist.list[selections[0]].description);
+		$("#mission2").text(tasklist.list[selections[1]].description);
+		$("#mission3").text(tasklist.list[selections[2]].description);
+			
+		window.location = "#selectmission";
+			
+		$("#mission1").bind( "click", function() {
+			var task = tasklist.list[selections[0]].key;
+			if (currentuser.assignTask(task)){
+				$("#front-mission").text(tasklist.list[selections[0]].description);
+				userdata.updateUserEntry(currentuser, true);
+				updateFrontPage();
+				window.location = "#front";
+			} else	
+				alert("Error!"); //fail
+		});
+		
+		$("#mission2").bind( "click", function() {
+			var task = tasklist.list[selections[1]].key;
+			if (currentuser.assignTask(task)){
+				$("#front-mission").text(tasklist.list[selections[1]].description);
+				userdata.updateUserEntry(currentuser, true);
+				updateFrontPage();
+				window.location = "#front";
+			} else	
+				alert("Error!"); //fail
+		});
+		
+		$("#mission3").bind( "click", function() {
+			var task = tasklist.list[selections[2]];
+			if (currentuser.assignTask(task)){
+				$("#front-mission").text(tasklist.list[selections[2]].description);
+				userdata.updateUserEntry(currentuser, true);
+				updateFrontPage();
+				window.location = "#front";
+			} else	
+				alert("Error!"); //fail
+		});
+	}
+
+
+	//===============================
+	// USER LOG
+	//===============================
+		function renderUserLog(){
+			completedTasks = currentuser.completedTasks;
+			
+			$("#user-log-list").html('');
+			for (i = 0; i < completedTasks.length; i++){
+				$("#user-log-list").append("<li>" + completedTasks[i].description + "</li>");
+			}
+			
+			window.location = "#user-log";
+			
+			//BUG: multiple runs of this might break look of list
+		}
+		
+	//===============================
+	// COMLETE MISSION
+	//===============================
+		$("#mission-complete").bind( "click", function() {
+			//clicked when user completes mission
+			comment = $("#mission-complete-comment").val();
+						
+			currentuser.addCurTaskToHistory(comment);
+			userdata.updateUserEntry(currentuser, true);
+			renderUserLog();
+		});
+		
+
+
+	//===============================
+	// NAV BAR
+	//===============================
+		$("#menu-front").live( "click", function() {
+			console.log("menu-front: " + updateFrontPage());
+			if (updateFrontPage())
+				window.location = "#front";
+		});
+		$("#menu-log").live( "click", function() {
+			renderUserLog();
+		});
+		$("#menu-newmission").live( "click", function() {
+				renderMissionPage();
+		});
+	//===============================
+	// BINDINGS
+	//===============================
+	
+		$( "#firsttime-username-button" ).bind( "click", function() {
+			str = $("#firsttime-username").val();
+			if (validateAlphaNumeric(str) && str.length >= 3){
+				//AppConfig set for first time.
+				initFirstTime(str);
+				window.location = "#front-nomission";
+			} else
+				alert("Input should be alphanumeric and have at least 3 characters.");
+		});
+		$("#front-newmission").live( "click", function() {
+				renderMissionPage();
+		});		
+});	
+</script>
+
+
+		
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+		
+	</body>
+</html>

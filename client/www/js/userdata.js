@@ -58,31 +58,40 @@ function UserData() {
 
 	this.updateUserEntry = function (user, save){
 		//userinfo corresponds to UserInfo-type object
-		if (!user)
+		if (typeof(user) === "undefined"){
+			console.log("UserData: updateUserEntry() failed, user undefined");
 			return;
+		}
 			
 		var u = -1;
-		for (i = 0; i < this.userInfo.length; i++){
-			if (this.userInfo[i].username == user.username)
-				u = i;
-		}
-		
-		if (u == -1) {	//not found, create new entry in UserData
-			u = this.userInfo.length;
-			this.userInfo.push ({});
+		if (this.userInfo.length != 0){
+			for (i = 0; i < this.userInfo.length; i++){
+				if (this.userInfo[i].username == user.username)
+					u = i;
+			}
+			
+			if (u == -1) {	//not found, create new entry in UserData
+				u = this.userInfo.length;
+				this.userInfo.push({});
+			}
+		} else {
+			u = 0;
+			this.userInfo.push({});
 		}
 		
 		this.userInfo[u].username = user.username;
 		this.userInfo[u].curTask = user.curTask;
 		this.userInfo[u].deadline = user.deadline;
 		this.userInfo[u].completedTasks = user.completedTasks;
+		
+		console.log("updateUserEntry: pushed user: ", this.userInfo[u]);
 	
 		if (save)
 			this.saveToLocal();
 	};
 
 	this.saveToLocal = function() {
-		localStorage["userdata"] = JSON.stringify(UserData);
+		localStorage["userdata"] = JSON.stringify(this.userInfo);
 	};
 
 	this.getUserInfo = function(username) {
@@ -103,8 +112,10 @@ function UserData() {
 	};
 	
 	this.getFromLocal = function(){	
-		var userdata = localStorage["userdata"];	
-		this.userInfo = JSON.parse(userdata);
+		var ud = localStorage["userdata"];	
+		console.log(typeof(ud));
+		if (typeof(ud) !== "undefined" && ud !== "undefined")
+			this.userInfo = JSON.parse(ud);
 	};
 
 	
