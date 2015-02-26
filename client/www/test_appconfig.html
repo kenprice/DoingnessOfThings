@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>AppConfig Unit Test</title>
+<link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.17.1.css">
+<script src="http://code.jquery.com/qunit/qunit-1.17.1.js"></script>
+<script src="js/appconfig.js"></script>
+
+	<script>
+	QUnit.test("AppConfig Unit Test", function( assert ) {
+		var appconfig = new AppConfig();
+		//If no parameters in constructor, should set lastUser to "anonymous" and lastDate to current date.
+		assert.equal(appconfig.lastUser, "anonymous", "Default lastUser attribute is \'anonymous\'");
+		assert.ok(Date.now() - appconfig.lastDate < 1000, "Default lastDate attribute is current time");
+	});
+	</script>
+</head>
+<body>
+<div id="qunit"></div>
+</body>
+</html>
