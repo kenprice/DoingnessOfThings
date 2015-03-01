@@ -273,18 +273,15 @@ function initialize(){
 
 }
 
-
-$(document).ready(function () {
-
-	//===============================
-	// START UP
-	//===============================
-	var appconfig = new AppConfig();
-	var userdata = new UserData();
-	var currentuser = {};
-	var tasklist = new Tasklist();
-
+//===============================
+// START UP
+//===============================
+var appconfig = new AppConfig();
+var userdata = new UserData();
+var currentuser = {};
+var tasklist = new Tasklist();
 	
+$(document).ready(function () {
 	console.log("init: userdata after declaration = " + JSON.stringify(userdata));
 	userdata.getFromLocal();
 	

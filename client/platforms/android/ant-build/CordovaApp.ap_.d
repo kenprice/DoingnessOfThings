@@ -35,6 +35,7 @@ C:\Users\Ken\Documents\LiClipse Workspace\DoingnessOfThings\client\platforms\and
 C:\Users\Ken\Documents\LiClipse Workspace\DoingnessOfThings\client\platforms\android\assets\www\img \
 C:\Users\Ken\Documents\LiClipse Workspace\DoingnessOfThings\client\platforms\android\assets\www\index.html \
 C:\Users\Ken\Documents\LiClipse Workspace\DoingnessOfThings\client\platforms\android\assets\www\js \
+C:\Users\Ken\Documents\LiClipse Workspace\DoingnessOfThings\client\platforms\android\assets\www\test_appconfig.html \
 C:\Users\Ken\Documents\LiClipse Workspace\DoingnessOfThings\client\platforms\android\assets\www\css\index.css \
 C:\Users\Ken\Documents\LiClipse Workspace\DoingnessOfThings\client\platforms\android\assets\www\img\logo.png \
 C:\Users\Ken\Documents\LiClipse Workspace\DoingnessOfThings\client\platforms\android\assets\www\js\appconfig.js \

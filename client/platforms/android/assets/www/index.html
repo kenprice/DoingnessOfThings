@@ -269,18 +269,24 @@
 INITIALIZE APP DATA
 ====================================
 */
+function initialize(){
 
+}
+
+//===============================
+// START UP
+//===============================
+var appconfig = new AppConfig();
+var userdata = new UserData();
+var currentuser = {};
+var tasklist = new Tasklist();
+	
 $(document).ready(function () {
-
-	//===============================
-	// START UP
-	//===============================
-	var appconfig = new AppConfig();
-	var userdata = new UserData();
-	var currentuser = {};
-	var tasklist = new Tasklist();
-
+	console.log("init: userdata after declaration = " + JSON.stringify(userdata));
 	userdata.getFromLocal();
+	
+	console.log("init: userdata after getFromLocal = " + JSON.stringify(userdata));
+	
 	appconfig.getFromLocal();
 	
 	tasklist_success = tasklist.getFromLocal();
@@ -299,11 +305,17 @@ $(document).ready(function () {
 			currentuser = new User(lastuser, curTask, deadline, completedTasks);
 		}
 	}
+	
+	console.log("init: currentuser = " + JSON.stringify(currentuser));
 	 
-	function initFirstTime(username){
+	initFirstTime = function(username){
 		appconfig = new AppConfig(username, Date.now());
 		appconfig.saveToLocal();
+		
 		currentuser = new User(username, null, null, null);
+		console.log("init: currentuser fisr time = " + JSON.stringify(currentuser));
+	
+		userdata.updateUserEntry(currentuser, true);
 	}
 	 
 	 
