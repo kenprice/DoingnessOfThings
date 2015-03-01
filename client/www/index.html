@@ -152,10 +152,10 @@
 
 			<div data-role="content">	
 				
-				<ul data-role="listview" data-inset="true">
-					<li><a href="#" id="mission1"></a></li>
-					<li><a href="#" id="mission2"></a></li>
-					<li><a href="#" id="mission3"></a></li>
+				<ul class="ui-listview ui-listview-inset ui-corner-all ui-shadow" data-role="listview" data-inset="true">
+					<li class="ui-li-static ui-body-inherit ui-first-child" id="mission1"></li>
+					<li class="ui-li-static ui-body-inherit ui-first-child" id="mission2"></li>
+					<li class="ui-li-static ui-body-inherit ui-first-child" id="mission3"></li>
 				</ul>						
 			</div><!-- /content -->
         
@@ -250,7 +250,7 @@
 
 			<div data-role="content">
 				
-				<ul data-role="listview" id="user-log-list">
+				<ul class="ui-listview ui-listview-inset ui-corner-all ui-shadow" data-role="listview" data-inset="true" id="user-log-list">
 				
 				</ul>						
 			</div><!-- /content -->
@@ -436,7 +436,7 @@ $(document).ready(function () {
 			};
 			loop();
 			
-			$("#user-log-list").append(output).listview("refresh");
+			$("#user-log-list").append(output);
 			window.location = "#user-log";
 		}
 		
