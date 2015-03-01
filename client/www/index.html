@@ -276,7 +276,6 @@ function initialize(){
 //===============================
 // START UP
 //===============================
-var appconfig = new AppConfig();
 var userdata = new UserData();
 var currentuser = {};
 var tasklist = new Tasklist();
@@ -287,14 +286,10 @@ $(document).ready(function () {
 	
 	console.log("init: userdata after getFromLocal = " + JSON.stringify(userdata));
 	
-	appconfig.getFromLocal();
 	
 	tasklist_success = tasklist.getFromLocal();
 	if (!tasklist_success)
 		tasklist.getFromServer();
-
-	if (!appconfig.firstTime)
-		lastuser = appconfig.lastUser;
 
 	u = -1;
 	for (i = 0; i < userdata.userInfo.length; i++){
@@ -309,8 +304,7 @@ $(document).ready(function () {
 	console.log("init: currentuser = " + JSON.stringify(currentuser));
 	 
 	initFirstTime = function(username){
-		appconfig = new AppConfig(username, Date.now());
-		appconfig.saveToLocal();
+		AppConfig.setConfig(username, Date.now());
 		
 		currentuser = new User(username, null, null, null);
 		console.log("init: currentuser fisr time = " + JSON.stringify(currentuser));
@@ -360,7 +354,7 @@ $(document).ready(function () {
 	}
 
 	function renderFront() {
-		if (appconfig.firstTime){
+		if (AppConfig.isFirstTime()){
 			window.location = "#firsttime";	
 			return;
 		}
@@ -447,7 +441,7 @@ $(document).ready(function () {
 			
 			$("#user-log-list").html('');
 			for (i = 0; i < completedTasks.length; i++){
-				$("#user-log-list").append("<li>" + completedTasks[i].description + "</li>");
+				$("#user-log-list").append("<li>" + tasklist.getTaskFromKey(completedTasks[i].key).description + "</li>");
 			}
 			
 			window.location = "#user-log";

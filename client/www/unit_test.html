@@ -10,10 +10,16 @@
 
 	<script>
 	QUnit.test("AppConfig Unit Test", function( assert ) {
-		var appconfig = new AppConfig();
 		//If no parameters in constructor, should set lastUser to "anonymous" and lastDate to current date.
-		assert.equal(appconfig.lastUser, "anonymous", "Default lastUser attribute is \'anonymous\'");
-		assert.ok(Date.now() - appconfig.lastDate < 1000, "Default lastDate attribute is current time");
+		AppConfig.resetConfig();
+		assert.equal(AppConfig.getLastUser(), "anonymous", "Default lastUser attribute is \'anonymous\'");
+		assert.ok(Date.now() - AppConfig.getLastDate() < 1000, "Default lastDate attribute is current time");
+		assert.ok(AppConfig.isFirstTime(), "Default value for first time is true");
+		
+		AppConfig.setConfig("test", Date.now());
+		assert.equal(AppConfig.getLastUser(), "test", "setConfig sets user properly");
+		assert.ok(Date.now() - AppConfig.getLastDate() < 1000, "setConfig changes last date");
+		assert.ok(!AppConfig.isFirstTime(), "setConfig sets first time to false");
 	});
 	
 	QUnit.test("User Test", function( assert ) {

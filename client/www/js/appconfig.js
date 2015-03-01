@@ -1,42 +1,73 @@
-function AppConfig(lastUser, lastDate) {
-	
-	//Set default for AppConfig to have anonymous as last user, 
-	//this user will be treated as an "undefined" user
-	if (typeof(lastUser) !== "undefined")
-		this.lastUser = lastUser;
-	else
-		this.lastUser = "anonymous";
-	
-	//Default is now. If AppConfig object is created with no params,
-	//we can assume app is run for the first time
-	console.log("appconfig: lastDate = " + lastDate);
-	if (typeof(lastDate) !== "undefined")
-		this.lastDate = lastDate;
-	else	
-		this.lastDate = Date.now();
-	
-	console.log("appconfig: this.lastDate = " + this.lastDate);
-	console.log("appconfig: this.lastUser = " + this.lasetUser);
-	
-	this.getFromLocal = function() {
+var AppConfig = (function() {
+	var lastUser = "anonymous";
+	var lastDate = Date.now();
+	var firstTime = true;
+	var config = localStorage["appconfig"];
+		
+	var getFromLocal = function() {
 		config = localStorage["appconfig"];
-		console.log("appconfig.getfromlocal: config == " + config);
 		
 		if (typeof(config) !== "undefined"){
 			config = JSON.parse(config);
-			this.lastUser = config.lastUser;
-			this.lastDate = config.lastDate;
-			this.firstTime = false;
+			lastUser = config.lastUser;
+			lastDate = config.lastDate;
+			firstTime = false;
 		} else {
-			this.firstTime = true;
+			firstTime = true;
 		}
 	};
 	
-	this.saveToLocal = function() {
-		var config = {};
-		config.lastUser = this.lastUser;
-		config.lastDate = this.lastDate;
-		config.firstTime = false;
-		localStorage["appconfig"] = JSON.stringify(config);
+	var saveToLocal = function() {
+		var save_config = {};
+		save_config.lastUser = lastUser;
+		save_config.lastDate = lastDate;
+		save_config.firstTime = false;
+		localStorage["appconfig"] = JSON.stringify(save_config);
 	};
-}
+	
+	getFromLocal();
+	
+	return {
+		setLastUser : function (username){
+			//Set default for AppConfig to have anonymous as last user, 
+			//this user will be treated as an "undefined" user
+			if (typeof(username) !== "undefined")
+				lastUser = username;
+			else
+				lastUser = "anonymous";
+				
+			saveToLocal();
+		},
+		setLastDate : function (date){
+			//Default is now. If AppConfig object is created with no params,
+			//we can assume app is run for the first time
+			if (typeof(lastDate) !== "undefined")
+				lastDate = lastDate;
+			else	
+				lastDate = Date.now();
+				
+			saveToLocal();
+		},
+		getLastUser : function(){
+			return lastUser;
+		},
+		getLastDate : function(){
+			return lastDate;
+		},
+		isFirstTime : function(){
+			return firstTime;
+		},
+		setConfig : function(username, date){
+			lastUser = username;
+			lastDate = date;
+			firstTime = false;
+			saveToLocal();
+		},
+		resetConfig : function(){
+			lastUser = "anonymous";
+			lastDate = Date.now();
+			firstTime = true;
+			saveToLocal();
+		}
+	};
+})();
