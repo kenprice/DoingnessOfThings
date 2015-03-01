@@ -1,131 +1,144 @@
-function User(username, curTask, deadline, completedTasks) {	
-	if (!username) {
-		this.username = "anonymous";
-	} else {	
-		this.username = username;
-		this.curTask = curTask;
-		this.deadline = deadline;
-		this.completedTasks = [];
-
-		if (completedTasks)
-			this.completedTasks = completedTasks;
+var Users = (function() {
+	var userInfo = [];
+	var userdata_local = localStorage["userdata"];
+		
+	var saveToLocal = function() {
+		localStorage["userdata"] = JSON.stringify(userInfo);
+	};
+	
+	var getFromLocal = function(){	
+		userdata_local = localStorage["userdata"];	
+		if (typeof(userdata_local) !== "undefined" && userdata_local !== "undefined")
+			userInfo = JSON.parse(userdata_local);
 		else
-			this.completedTasks = []; //empty array if no completed tasks
-	}
-	
-	this.assignTask = function (key){
-		//index parameter should be index of Tasklist item, not the key
-		//for the datastore
-		if (this.curTask)
-			return false;
-		
-		this.curTask = key;
-		var deadline = new Date();
-		this.deadline = deadline.setDate(deadline.getDate() + 1);
-		
-		return true;
+			userInfo = [];
 	};
 	
-	this.addCurTaskToHistory = function(comment){
-		//called when user completes mission
-		//task history only needs to store task key, completed date, and comments
-		var task = {};
-		
-		var d = new Date();
-		task.key = this.curTask;
-		task.completeDate = d;
-		task.comment = comment;
-		
-		if (!this.completedTasks)
-			this.completedTasks = [];
-			
-		console.log(this.completedTasks);
-		this.completedTasks.push(task);
-		
-		this.curTask = null;
-		this.deadline = null;
-	};
-	
-	this.clearTask = function(){	
-		this.curTask = null;
-		this.deadline = null;
-	}
-}
-
-function UserData() {
-
-	this.userInfo = [];
-
-	this.updateUserEntry = function (user, save){
-		//userinfo corresponds to UserInfo-type object
-		if (typeof(user) === "undefined"){
-			console.log("UserData: updateUserEntry() failed, user undefined");
-			return;
-		}
-			
-		var u = -1;
-		if (this.userInfo.length != 0){
-			for (i = 0; i < this.userInfo.length; i++){
-				if (this.userInfo[i].username == user.username)
-					u = i;
-			}
-			
-			if (u == -1) {	//not found, create new entry in UserData
-				u = this.userInfo.length;
-				this.userInfo.push({});
-			}
-		} else {
-			u = 0;
-			this.userInfo.push({});
-		}
-		
-		this.userInfo[u].username = user.username;
-		this.userInfo[u].curTask = user.curTask;
-		this.userInfo[u].deadline = user.deadline;
-		this.userInfo[u].completedTasks = user.completedTasks;
-		
-		console.log("updateUserEntry: pushed user: ", this.userInfo[u]);
-	
-		if (save)
-			this.saveToLocal();
-	};
-
-	this.saveToLocal = function() {
-		localStorage["userdata"] = JSON.stringify(this.userInfo);
-	};
-
-	this.getUserInfo = function(username) {
+	var getUserInfo = function(username) {
 		//fetches user info. if not found, return null
+		getFromLocal();
 		if(typeof username == "undefined")
 			return null;
-		
+			
 		var u = -1;
-		for (i = 0; i < this.userInfo.length; i++){
-			if (this.userInfo[i].username == username)
+		for (i = 0; i < userInfo.length; i++){
+			if (userInfo[i].username == username)
 				u = i;
 		}
-		
+			
 		if (u > -1)
-			return this.userInfo[u];
+			return userInfo[u];
 		else
 			return null; //Not found
-	};
+	}
+		
+	getFromLocal();
 	
-	this.getFromLocal = function(){	
-		var ud = localStorage["userdata"];	
-		console.log(typeof(ud));
-		if (typeof(ud) !== "undefined" && ud !== "undefined")
-			this.userInfo = JSON.parse(ud);
-	};
-
+	return {
+		update : function(username, curTask, deadline, completedTasks) {
+			if (typeof(username) === "undefined")
+				return;
+				
+			var u = -1;
+			if (userInfo.length != 0){
+				for (i = 0; i < userInfo.length; i++){
+					if (userInfo[i].username == username)
+						u = i;
+				}
+				
+				if (u == -1) {	//not found, create new entry in UserData
+					u = userInfo.length;
+					userInfo.push({});
+				}
+			} else {
+				u = 0;
+				userInfo.push({});
+			}
+			
+			if (typeof(username) !== "undefined")
+				userInfo[u].username = username;
+			else
+				userInfo[u].username = null;
+			
+			if (typeof(curTask) !== "undefined")
+				userInfo[u].curTask = curTask;
+			else
+				userInfo[u].curTask = null;
+			
+			userInfo[u].deadline = deadline;
+			
+			if (typeof(completedTasks) !== "undefined")
+				userInfo[u].completedTasks = completedTasks;
+		
+			saveToLocal();
+		},
+		
+		addCurTaskToHistory : function(username, comment){
+			//called when user completes mission
+			//task history only needs to store task key, completed date, and comments
+			var task = {};
+			var d = new Date();
+			var current_user = getUserInfo(username);
+			
+			task.key = current_user.curTask;
+			task.completeDate = d;
+			task.comment = comment;
+			
+			if (!current_user.completedTasks)
+				current_user.completedTasks = [];
+				
+			current_user.completedTasks.push(task);
+			
+			this.update(username, null, null, current_user.completedTasks);
+		},
+		
+		assignTask : function (username, key){
+			//index parameter should be index of Tasklist item, not the key
+			//for the datastore
+			var current_user = getUserInfo(username);
+			
+			if (current_user && current_user.curTask)
+				return false;
+			
+			var deadline = new Date();
+			deadline = deadline.setDate(deadline.getDate() + 1);
+			
+			this.update(username, key, deadline);
+			return true;
+		},
 	
-
-}
-
-
-
-
-
+		clearTask : function (username){
+			this.update(username, null, null);
+		},
+	
+		getCurTask (username){
+			var current_user = getUserInfo(username);
+			if (current_user){
+				return current_user.curTask;
+			}
+		},
+	
+		getDeadline (username){
+			var current_user = getUserInfo(username);
+			if (current_user){
+				return current_user.deadline;
+			}
+		},
+		
+		getCompletedTasks (username){
+			var current_user = getUserInfo(username);
+			if (current_user && current_user.completedTasks){
+				return current_user.completedTasks;
+			}
+			return [];
+		},
+	
+		reset : function (){
+			localStorage.removeItem("userdata");
+			getFromLocal();
+		}
+	}
+})();
 
 
 

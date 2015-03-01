@@ -63,7 +63,7 @@ var AppConfig = (function() {
 			firstTime = false;
 			saveToLocal();
 		},
-		resetConfig : function(){
+		reset : function(){
 			lastUser = "anonymous";
 			lastDate = Date.now();
 			firstTime = true;

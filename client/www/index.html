@@ -276,42 +276,23 @@ function initialize(){
 //===============================
 // START UP
 //===============================
-var userdata = new UserData();
-var currentuser = {};
 var tasklist = new Tasklist();
 	
 $(document).ready(function () {
-	console.log("init: userdata after declaration = " + JSON.stringify(userdata));
-	userdata.getFromLocal();
-	
-	console.log("init: userdata after getFromLocal = " + JSON.stringify(userdata));
-	
+	var currentuser = AppConfig.getLastUser();
 	
 	tasklist_success = tasklist.getFromLocal();
 	if (!tasklist_success)
 		tasklist.getFromServer();
 
-	u = -1;
-	for (i = 0; i < userdata.userInfo.length; i++){
-		if (userdata.userInfo[i].username == lastuser){
-			deadline = userdata.userInfo[i].deadline;
-			curTask = userdata.userInfo[i].curTask;
-			completedTasks = userdata.userInfo[i].completedTasks;
-			currentuser = new User(lastuser, curTask, deadline, completedTasks);
-		}
-	}
-	
-	console.log("init: currentuser = " + JSON.stringify(currentuser));
 	 
 	initFirstTime = function(username){
 		AppConfig.setConfig(username, Date.now());
 		
 		currentuser = new User(username, null, null, null);
-		console.log("init: currentuser fisr time = " + JSON.stringify(currentuser));
 	
 		userdata.updateUserEntry(currentuser, true);
 	}
-	 
 	 
 	//pages can be aware of objects defined above.
 	 
@@ -322,22 +303,19 @@ $(document).ready(function () {
 	function updateFrontPage(){
 		//If Front page was updated, return true.
 		//Used to refresh front page. some cases redirects.
-		if (!currentuser) return false;
-			
-		if (currentuser.curTask && currentuser.deadline){
-			console.log(currentuser.curTask);
-			var task = tasklist.getTaskFromKey(currentuser.curTask);
+		
+		if (Users.getCurTask(currentuser) && Users.getDeadline(currentuser)){
+			var task = tasklist.getTaskFromKey(Users.getCurTask(currentuser));
 			$("#front-mission").text(task.description);
 					
-			if (currentuser.deadline < Date.now())	{
+			if (Users.getDeadline(currentuser) < Date.now())	{
 				//Task was assigned but deadline passed.
 				window.location = "#mission-failed";
-				clearTask();
-				userdata.updateUserEntry(currentuser, true);
+				Users.clearTask();
 			} else {
 				//Task was assigned and still ongoing
-				d = new Date(currentuser.deadline);
-				d_ms = currentuser.deadline - Date.now();
+				d = new Date(Users.getDeadline(currentuser));
+				d_ms = d - Date.now();
 				d_hrs = parseInt(d_ms/(1000*60*60));
 				d_mins = parseInt((d_ms - d_hrs*1000*60*60)/(1000*60));
 						
@@ -363,6 +341,7 @@ $(document).ready(function () {
 
 	renderFront();	
 
+	window.updateFrontPage = updateFrontPage;
 	setInterval ( "updateFrontPage()", 60000 );
 
 		
@@ -373,7 +352,7 @@ $(document).ready(function () {
 	function renderMissionPage(){
 		//Retrieves task list, picks 3 random tasks and displays them.
 		
-		if (currentuser.curTask){
+		if (Users.getCurTask(currentuser)){
 			window.location = "#selectmission-disabled";
 			return;
 		}
@@ -400,9 +379,9 @@ $(document).ready(function () {
 			
 		$("#mission1").bind( "click", function() {
 			var task = tasklist.list[selections[0]].key;
-			if (currentuser.assignTask(task)){
+			
+			if (Users.assignTask(currentuser, task)){
 				$("#front-mission").text(tasklist.list[selections[0]].description);
-				userdata.updateUserEntry(currentuser, true);
 				updateFrontPage();
 				window.location = "#front";
 			} else	
@@ -411,9 +390,8 @@ $(document).ready(function () {
 		
 		$("#mission2").bind( "click", function() {
 			var task = tasklist.list[selections[1]].key;
-			if (currentuser.assignTask(task)){
+			if (Users.assignTask(currentuser, task)){
 				$("#front-mission").text(tasklist.list[selections[1]].description);
-				userdata.updateUserEntry(currentuser, true);
 				updateFrontPage();
 				window.location = "#front";
 			} else	
@@ -422,9 +400,8 @@ $(document).ready(function () {
 		
 		$("#mission3").bind( "click", function() {
 			var task = tasklist.list[selections[2]];
-			if (currentuser.assignTask(task)){
+			if (Users.assignTask(currentuser, task)){
 				$("#front-mission").text(tasklist.list[selections[2]].description);
-				userdata.updateUserEntry(currentuser, true);
 				updateFrontPage();
 				window.location = "#front";
 			} else	
@@ -437,16 +414,30 @@ $(document).ready(function () {
 	// USER LOG
 	//===============================
 		function renderUserLog(){
-			completedTasks = currentuser.completedTasks;
+			completedTasks = Users.getCompletedTasks(currentuser);
 			
+			var output = '';
 			$("#user-log-list").html('');
+			
+			/*
+			//Following loop doesn't work properly. Appears to loop just once.
 			for (i = 0; i < completedTasks.length; i++){
-				$("#user-log-list").append("<li>" + tasklist.getTaskFromKey(completedTasks[i].key).description + "</li>");
+				output += "<li>" + tasklist.getTaskFromKey(completedTasks[i].key).description + "</li>";
 			}
+			//...but this does.
+			*/
+			var i = 0;
+			function loop(){
+				if (i < completedTasks.length){
+					output += "<li>" + tasklist.getTaskFromKey(completedTasks[i].key).description + "</li>";
+					i++;
+					loop();
+				}
+			};
+			loop();
 			
+			$("#user-log-list").append(output).listview("refresh");
 			window.location = "#user-log";
-			
-			//BUG: multiple runs of this might break look of list
 		}
 		
 	//===============================
@@ -456,8 +447,8 @@ $(document).ready(function () {
 			//clicked when user completes mission
 			comment = $("#mission-complete-comment").val();
 						
-			currentuser.addCurTaskToHistory(comment);
-			userdata.updateUserEntry(currentuser, true);
+			
+			Users.addCurTaskToHistory(currentuser, comment);
 			renderUserLog();
 		});
 		

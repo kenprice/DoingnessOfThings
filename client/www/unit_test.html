@@ -11,7 +11,7 @@
 	<script>
 	QUnit.test("AppConfig Unit Test", function( assert ) {
 		//If no parameters in constructor, should set lastUser to "anonymous" and lastDate to current date.
-		AppConfig.resetConfig();
+		AppConfig.reset();
 		assert.equal(AppConfig.getLastUser(), "anonymous", "Default lastUser attribute is \'anonymous\'");
 		assert.ok(Date.now() - AppConfig.getLastDate() < 1000, "Default lastDate attribute is current time");
 		assert.ok(AppConfig.isFirstTime(), "Default value for first time is true");
@@ -22,20 +22,29 @@
 		assert.ok(!AppConfig.isFirstTime(), "setConfig sets first time to false");
 	});
 	
-	QUnit.test("User Test", function( assert ) {
-		var testuser = new User();
+	QUnit.test("Users Unit Test", function( assert ) {
+		Users.reset();
+		var username = "Test";
+		var completedTasks;
 		
-		testuser.username = "Test";
-		testuser.curTask = "test000";
-		testuser.deadline = new Date();
+		Users.update(username);
+		Users.assignTask(username, "test000");
 		
-		assert.ok(!testuser.completedTasks, "completedTasks attribute empty by default");
+		assert.equal(Users.getCurTask(username), "test000", "Users update saves curTask");
+		assert.ok(Users.getCompletedTasks(username).length < 1, "completedTasks attribute empty by default");
 		
-		testuser.addCurTaskToHistory("somecomment");
+		Users.addCurTaskToHistory(username, "somecomment");
+		assert.ok(Users.getCompletedTasks(username).length == 1, "addCurTaskToHistory adds new item");
 		
-		assert.ok(typeof(testuser.completedTasks[0]) != "undefined", "addCurTaskToHistory will add an element to completedTasks");
+		completedTasks = Users.getCompletedTasks(username);
+		assert.ok(completedTasks[0].key == "test000", "addCurTaskToHistory will add valid element to completedTasks");
 		
-		assert.ok(testuser.completedTasks[0].key == "test000", "addCurTaskToHistory will add valid element to completedTasks");
+		Users.assignTask(username, "test001");
+		Users.addCurTaskToHistory(username, "somecomment");
+		assert.ok(Users.getCompletedTasks(username).length == 2, "addCurTaskToHistory can add more than 1 item");
+		
+		completedTasks = Users.getCompletedTasks(username);
+		assert.ok(completedTasks[1].key == "test001", "addCurTaskToHistory will add valid element for more than 1 item");
 	});
 	</script>
 </head>
